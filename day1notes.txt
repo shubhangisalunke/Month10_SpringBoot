@@ -1,0 +1,186 @@
+Webservice:
+
+Collection of encapsulated functions accessed over internet.
+
+SOAP based service:  
+Exposes functionality.
+
+Simple Object Access Protocol.
+
+RESTful service: 
+
+Exposes data.
+
+Representational State Transfer:- The state of a resource(data) is transfered between the client and server.
+
+
+REST principles:
+
+
+1.Give Everything an ID: Each resource available in the server should have a unique url.
+
+2.Link Things Together:
+
+There should be at the most one fixed url and from that url all other sub urls should be dynamically discoverable and navigatable.
+
+This is also called HATEOAS principle;
+
+HATEOAS--------------------Hypermedia As The Engine Of Application State.
+
+
+
+3.Use Standard HTTP methods:
+
+Any data should support CRUD operations.
+
+		SQL	REST
+C----Create-------------Insert-------POST-----At the end of a POST request, a new url should be created in the server side
+R-----Retrieve---------Select-------GET--------Fetches data from a specific url.
+U-----Update-----------Update------PUT--------Modifies the data at an existing url.
+D-----Delete------------Delete------DELETE--Removes an url.
+
+
+4.Support multiple represenations.
+
+
+The same url should return data in multiple formats based on the client's request.
+
+if the client prefers json format for a data at url http://localhost:8080/emp/1001, the response may be
+
+{
+"id":1001,
+"name":"Rajesh",
+"designation":"Developer"
+}
+
+if another client prefers xml format for a data at url http://localhost:8080/emp/1001, the response may be
+
+<employee>
+<id>1001</id>
+<name>Rajesh</name>
+<designation>Developer</designation>
+</employee>
+
+
+5. Use stateless communication:
+
+The server should not maintain a conversational state with the client.
+The server does not remember the previous calls of the client.
+Every thing required to invoke a request should be part of that request.
+
+
+Opinionated Default Configuration:
+
+Spring Boot knows what dependencies you need/what server you need to deploy/what additional dependencies/libraries you need.
+
+STS-----------Spring Tool Suite---------------Popular IDE for spring development.
+
+STS-----------Combination of Eclipse and Spring plugins
+
+@SpringBootApplication is equivalent to using the following 3 annotations together.
+
+@Configuration--------------Makes the current class as the configuration class.
+
+@ComponentScan---------Enables scanning of subpackages under the current package
+
+@EnableAutoConfiguration-----------enables sprint boot's auto configuration mechanism------if a maven dependency is added, it enables that feature automatically--------------for example a spring web dependency automatically includes a embedded tomcat server.
+
+
+http://localhost:8080/first/msg
+
+localhost:8080-------------embedded tomcat server
+
+first-----------------------------url of the first controller
+
+msg--------------------------url for the method getMessage
+
+@ResponseBody---------------------------this annotation denotes that the returned content is sent as a response to the client.
+
+Adding Spring Boot Dev Tools dependency enables auto loading the changes.
+
+
+Domain class-------------represents the object transfered between client and server.
+
+The domain class should be json parser compliant.
+
+json parser compliant class:
+
+1. should have getter and setter methods for the data members.
+2. should have a no argument constructor
+
+
+
+Client Tier------------------------>Presentation Tier--------------------->Business Tier(Service Layer)----------------------->Resource Tier(DB Layer)
+
+
+Client Tier-----------------Runs in the browser
+
+Presentation Tier---------Generates the content that is sent to the browser(Typically server side restful services)
+
+
+Business Tier-------------Back end logic----------returns the data needed for presentation tier(Also called service layer)
+
+Resource Tier----------------Typically represents the data available in database/external system(Also called db layer)
+
+
+
+
+@RestController-------------------@Controller+@ResponseBody
+
+
+
+
+
+
+http://localhost:8080/emp/1001
+
+In the above url, /1001 may be represented in the code as /{empId}
+
+@PathVariable annotation assigns a path variable to a local variable.
+
+For example
+
+RequestMapping("/{empId}")
+
+----------- getEmployee(@PathVariable("empId" int x)-----------assigns the value of empId path variable to the parameter x.
+
+
+@Service is same as @Component and used to improve the readability to understand that it is used in the service layer.
+
+
+ResponseEntity----------------represents the response sent to the client.
+
+ResponseEntity<Employee>(service.getEmployee(id), HttpStatus.OK)
+
+
+ResponseEntity<Employee>----------denotes that the response body contains the employee type.
+
+service.getEmployee(id) which returns Employee object is the response body.
+
+HttpStatus.OK is equivalent to the integer 200.
+
+Two methods can have the same url if their request type is different.
+
+Two methods with the same request type can't have the same url.
+
+ MediaType.APPLICATION_JSON_VALUE  is equivalent to the string application/json
+
+
+
+If a domain class should be converted to xml, it should be jax-b compliant.
+
+jax-b----------------java api for xml binding-----------used for converting java object to xml and vice versa.
+
+jax-b compliant class should 
+
+1. be prefixed with @XMLRootElement annotation.
+
+2. have getter/setter methods for all instance variables.
+
+3. should have a no argument constructor.
+
+
+
+
+
+

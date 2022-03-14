@@ -1,0 +1,408 @@
+package com.citi.training.controller;
+
+mport org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping("/first")
+public class FirstController {
+	
+	@RequestMapping(path="/msg",produces = MediaType.TEXT_HTML_VALUE,method = RequestMethod.GET)
+	@ResponseBody public String getMessage() {
+		return "<html><body><h2>Welcome to Spring Boot</h2></body></html>";
+	}i
+
+}
+
+
+http://localhost:8080/first/msg
+
+https://drive.google.com/drive/folders/1yyQQAnqzcNLt_ORErLTvja7zrGeIrlBw?usp=sharing
+
+
+
+Employee class
+
+
+package com.citi.training.domain;
+
+public class Employee {
+	private int id;
+	private String name;
+	private String designation;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDesignation() {
+		return designation;
+	}
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+	public Employee(int id, String name, String designation) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.designation = designation;
+	}
+	public Employee() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	
+
+}
+
+
+EmployeeService
+
+
+
+
+package com.citi.training.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
+import org.springframework.stereotype.Service;
+
+import com.citi.training.domain.Employee;
+
+@Service
+public class EmployeeService {
+	private TreeMap<Integer, Employee> empData=new TreeMap<>();
+	
+	public EmployeeService()
+	{
+		empData.put(1001, new Employee(1001, "Arvind", "Developer"));
+		empData.put(1002, new Employee(1002, "Amar", "Accountant"));
+		empData.put(1003, new Employee(1003, "Rajiv", "Architect"));
+	}
+	
+	public Employee getEmployee(int id) {
+		return empData.get(id);
+	}
+	
+	public List<Employee> getAllEmployees()
+	{
+		return new ArrayList<>(empData.values());
+	}
+}
+
+
+package com.citi.training.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.citi.training.domain.Employee;
+import com.citi.training.service.EmployeeService;
+
+@RestController
+@RequestMapping("/emp")
+public class EmployeeController {
+	
+	@Autowired
+	private EmployeeService service;
+	
+	@RequestMapping(path="/{empId}",produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.GET)
+	public ResponseEntity<Employee> getEmployeeDetails(@PathVariable("empId")int id)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		return new ResponseEntity<Employee>(service.getEmployee(id), HttpStatus.OK);
+	}
+	
+
+}
+
+
+First Controller
+
+package com.citi.training.controller;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping("/first")
+public class FirstController {
+	
+	@RequestMapping(path="/msg",produces = MediaType.TEXT_HTML_VALUE,method = RequestMethod.GET)
+	@ResponseBody public String getMessage() {
+		return "<html><body><h2>------Welcome to Spring Boot -----</h2></body></html>";
+	}
+	
+	@RequestMapping(path="/msg/{fName}/{lName}",produces = MediaType.TEXT_HTML_VALUE,method = RequestMethod.GET)
+	@ResponseBody public String getAnotherMessage(@PathVariable("fName")String firstName,
+			@PathVariable("lName")String  lastName){
+		return "<html><body><h2>------Welcome to Spring Boot -----"+firstName+" "+lastName+"</h2></body></html>";
+	}
+
+}
+
+
+http://localhost:8080/first/msg/Suresh/Reddy
+
+http://localhost:8080/emp/1001
+
+
+
+EmployeeController:
+
+
+
+package com.citi.training.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.citi.training.domain.Employee;
+import com.citi.training.service.EmployeeService;
+
+@RestController
+@RequestMapping("/emp")
+public class EmployeeController {
+	
+	@Autowired
+	private EmployeeService service;
+	
+	@RequestMapping(path="/{empId}",produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.GET)
+	public ResponseEntity<Employee> getEmployeeDetails(@PathVariable("empId")int id)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		return new ResponseEntity<Employee>(service.getEmployee(id), HttpStatus.OK);
+	}
+	
+	@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.GET)
+	public ResponseEntity<List<Employee>> getAllEmployees()
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		return new ResponseEntity<>(service.getAllEmployees(),HttpStatus.OK);
+	}
+	
+
+}
+
+
+EmployeeService
+
+
+package com.citi.training.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
+import org.springframework.stereotype.Service;
+
+import com.citi.training.domain.Employee;
+
+@Service
+public class EmployeeService {
+	private TreeMap<Integer, Employee> empData=new TreeMap<>();
+	
+	public EmployeeService()
+	{
+		empData.put(1001, new Employee(1001, "Arvind", "Developer"));
+		empData.put(1002, new Employee(1002, "Amar", "Accountant"));
+		empData.put(1003, new Employee(1003, "Rajiv", "Architect"));
+	}
+	
+	public Employee getEmployee(int id) {
+		return empData.get(id);
+	}
+	
+	public List<Employee> getAllEmployees()
+	{
+		return new ArrayList<>(empData.values());
+	}
+	
+	public String addEmployee(Employee e)
+	{
+		int nextId=empData.lastKey()+1;
+		e.setId(nextId);
+		empData.put(nextId, e);
+		return "employee with id "+nextId+" added successfully";
+	}
+	
+	public String updateEmployee(int id,Employee e)
+	{
+		Employee e1=empData.get(id);
+		e1.setName(e.getName());
+		e1.setDesignation(e.getDesignation());
+		return "employee with id "+id+" updated successfully";
+	}
+	
+	public String removeEmployee(int id)
+	{
+		empData.remove(id);
+		return "employee with id "+id+" removed successfully";
+	}
+	
+	
+}
+
+
+
+EmployeeController
+
+package com.citi.training.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.citi.training.domain.Employee;
+import com.citi.training.service.EmployeeService;
+
+@RestController
+@RequestMapping("/emp")
+public class EmployeeController {
+	
+	@Autowired
+	private EmployeeService service;
+	
+	@RequestMapping(path="/{empId}",produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.GET)
+	public ResponseEntity<Employee> getEmployeeDetails(@PathVariable("empId")int id)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		return new ResponseEntity<Employee>(service.getEmployee(id), HttpStatus.OK);
+	}
+	
+	@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.GET)
+	public ResponseEntity<List<Employee>> getAllEmployees()
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		return new ResponseEntity<>(service.getAllEmployees(),HttpStatus.OK);
+	}
+	
+	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.POST,
+			produces = MediaType.TEXT_HTML_VALUE)
+	public ResponseEntity<String> addEmployee(@RequestBody Employee e)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		String msg=service.addEmployee(e);
+		//HttpStatus.CREATED----------201
+		return new ResponseEntity<>("<html><body>"+msg+"</body></html>",HttpStatus.CREATED);
+	}
+
+	@RequestMapping(path="/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.PUT,
+			produces = MediaType.TEXT_HTML_VALUE)
+	public ResponseEntity<String> updateEmployee(@PathVariable("id") int empId,
+			@RequestBody Employee e)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		String msg=service.updateEmployee(empId, e);
+		
+		return new ResponseEntity<>("<html><body>"+msg+"</body></html>",HttpStatus.OK);
+	}
+	@RequestMapping(path="/{id}",method = RequestMethod.DELETE,
+			produces = MediaType.TEXT_HTML_VALUE)
+	public ResponseEntity<String> removeEmployee(@PathVariable("id") int empId)
+	//if the client sends the value for /{empId} as /1001, the parameter id will be replaced with 1001.
+	{
+		String msg=service.removeEmployee(empId);
+		
+		return new ResponseEntity<>("<html><body>"+msg+"</body></html>",HttpStatus.OK);
+	}
+}
+
+
+{
+    "name":"Arjun",
+    "designation":"Architect"
+}
+
+
+
+Employee
+
+
+package com.citi.training.domain;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Employee {
+	private int id;
+	private String name;
+	private String designation;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDesignation() {
+		return designation;
+	}
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+	public Employee(int id, String name, String designation) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.designation = designation;
+	}
+	public Employee() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	
+
+}
+
+
+
+https://drive.google.com/drive/folders/1yyQQAnqzcNLt_ORErLTvja7zrGeIrlBw?usp=sharing
+
